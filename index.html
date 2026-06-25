@@ -232,9 +232,97 @@
     .confirm-btns button { flex: 1; padding: 10px; border-radius: 10px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; }
     .btn-cancel { background: rgba(255,255,255,0.1); color: var(--text); }
     .btn-danger { background: #ff3b30; color: white; }
+
+    /* --- Login --- */
+    .login-screen {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 500;
+    }
+    .login-screen.hidden { display: none; }
+    .login-box {
+      width: 300px; text-align: center;
+    }
+    .login-box .logo { font-size: 56px; margin-bottom: 12px; }
+    .login-box .title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .login-box .subtitle { font-size: 14px; color: var(--text2); margin-bottom: 28px; }
+    .login-box input {
+      width: 100%; padding: 14px 16px; border-radius: 14px;
+      border: 1px solid var(--card-border); background: var(--card);
+      color: var(--text); font-size: 16px; outline: none; margin-bottom: 12px;
+      text-align: center;
+    }
+    .login-box input:focus { border-color: var(--mint); }
+    .login-box .login-btn {
+      width: 100%; padding: 14px; border-radius: 14px; border: none;
+      background: var(--mint); color: white; font-size: 16px; font-weight: 600;
+      cursor: pointer;
+    }
+    .login-box .login-btn:disabled { opacity: 0.4; }
+    .login-box .error { color: #ff3b30; font-size: 13px; margin-top: 12px; display: none; }
+
+    /* --- Finance --- */
+    .finance-total {
+      text-align: center; padding: 28px 16px;
+      background: var(--card); border-radius: 20px;
+      border: 1px solid var(--card-border); margin-bottom: 20px;
+    }
+    .finance-total .label { font-size: 13px; color: var(--text2); text-transform: uppercase; margin-bottom: 4px; }
+    .finance-total .amount { font-size: 40px; font-weight: 700; color: var(--mint); }
+    .finance-total .currency { font-size: 20px; font-weight: 400; color: var(--text2); }
+    .finance-month-card {
+      background: var(--card); border-radius: 16px; padding: 20px;
+      border: 1px solid var(--card-border); margin-bottom: 16px;
+    }
+    .finance-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 0; border-bottom: 1px solid var(--card-border);
+    }
+    .finance-row:last-child { border-bottom: none; }
+    .finance-row .fl { display: flex; align-items: center; gap: 10px; }
+    .finance-row .fi { font-size: 20px; }
+    .finance-row .fn { font-size: 15px; color: var(--text2); }
+    .finance-row .fv { font-size: 18px; font-weight: 600; }
+    .finance-input {
+      width: 120px; padding: 8px 12px; border-radius: 10px;
+      border: 1px solid var(--card-border); background: var(--bg);
+      color: var(--text); font-size: 16px; text-align: right; outline: none;
+    }
+    .finance-input:focus { border-color: var(--mint); }
+    .finance-input::-webkit-outer-spin-button,
+    .finance-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .finance-input { -moz-appearance: textfield; }
+    .finance-save-btn {
+      width: 100%; padding: 14px; border-radius: 14px; border: none;
+      background: var(--mint); color: white; font-size: 16px; font-weight: 600;
+      cursor: pointer; margin-top: 16px; transition: opacity 0.2s;
+    }
+    .finance-save-btn:active { opacity: 0.8; }
+    .finance-history { margin-top: 8px; }
+    .finance-hist-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px; background: var(--card); border-radius: 12px;
+      border: 1px solid var(--card-border); margin-bottom: 8px;
+    }
+    .finance-hist-row .month { font-size: 14px; font-weight: 600; }
+    .finance-hist-row .details { font-size: 12px; color: var(--text2); }
+    .finance-hist-row .saved { font-size: 15px; font-weight: 600; color: var(--mint); }
   </style>
 </head>
 <body>
+
+  <!-- ===== LOGIN SCREEN ===== -->
+  <div class="login-screen" id="login-screen">
+    <div class="login-box">
+      <div class="logo">рЯФТ</div>
+      <div class="title" id="login-title">Welcome</div>
+      <div class="subtitle" id="login-subtitle">Create a password to protect your data</div>
+      <input type="password" id="login-pass" placeholder="Password" autocomplete="off">
+      <input type="password" id="login-pass-confirm" placeholder="Confirm password" autocomplete="off">
+      <button class="login-btn" id="login-btn">Create</button>
+      <div class="error" id="login-error"></div>
+    </div>
+  </div>
 
   <!-- ===== TODAY PAGE ===== -->
   <div id="page-today" class="page active">
@@ -285,6 +373,33 @@
     </div>
   </div>
 
+  <!-- ===== FINANCE PAGE ===== -->
+  <div id="page-finance" class="page">
+    <div class="page-title">Finance</div>
+    <div class="finance-total">
+      <div class="label">Total saved</div>
+      <div class="amount" id="finance-total-amount">0 <span class="currency">&euro;</span></div>
+    </div>
+    <div class="finance-month-card">
+      <div class="month-nav">
+        <button id="fin-prev-month">&#8249;</button>
+        <span class="label" id="finance-month-title"></span>
+        <button id="fin-next-month">&#8250;</button>
+      </div>
+      <div class="finance-row">
+        <div class="fl"><span class="fi">рЯТ∞</span><span class="fn">Earned</span></div>
+        <div><input class="finance-input" id="fin-earned" type="number" placeholder="0" inputmode="decimal"> &euro;</div>
+      </div>
+      <div class="finance-row">
+        <div class="fl"><span class="fi">рЯП¶</span><span class="fn">Saved this month</span></div>
+        <div><input class="finance-input" id="fin-saved" type="number" placeholder="0" inputmode="decimal"> &euro;</div>
+      </div>
+      <button class="finance-save-btn" id="fin-save-btn">Save</button>
+    </div>
+    <div class="section-title">History</div>
+    <div class="finance-history" id="finance-history"></div>
+  </div>
+
   <!-- ===== TAB BAR ===== -->
   <nav class="tab-bar">
     <button class="tab-btn active" data-page="today">
@@ -298,6 +413,10 @@
     <button class="tab-btn" data-page="stats">
       <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/></svg>
       Stats
+    </button>
+    <button class="tab-btn" data-page="finance">
+      <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+      Finance
     </button>
   </nav>
 
@@ -333,8 +452,99 @@
   </div>
 
 <script>
+// ===== AUTH =====
+let authToken = localStorage.getItem('myhabits_token') || null;
+
+async function initAuth() {
+  const loginScreen = document.getElementById('login-screen');
+  const passInput = document.getElementById('login-pass');
+  const passConfirm = document.getElementById('login-pass-confirm');
+  const loginBtn = document.getElementById('login-btn');
+  const loginError = document.getElementById('login-error');
+
+  try {
+    const res = await fetch('/api/auth/status');
+    const { hasPassword } = await res.json();
+
+    if (hasPassword && authToken) {
+      // Verify saved token
+      const check = await fetch('/api/data', { headers: { 'X-Auth-Token': authToken } });
+      if (check.ok) { loginScreen.classList.add('hidden'); return; }
+      authToken = null;
+      localStorage.removeItem('myhabits_token');
+    }
+
+    if (hasPassword) {
+      // Login mode
+      document.getElementById('login-title').textContent = 'Welcome back';
+      document.getElementById('login-subtitle').textContent = 'Enter your password';
+      passConfirm.style.display = 'none';
+      loginBtn.textContent = 'Login';
+    }
+    // else: Register mode (default)
+
+    loginBtn.addEventListener('click', async () => {
+      const pass = passInput.value;
+      loginError.style.display = 'none';
+
+      if (!pass) return;
+
+      if (hasPassword) {
+        // Login
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pass }),
+        });
+        const data = await res.json();
+        if (data.ok) {
+          authToken = data.token;
+          localStorage.setItem('myhabits_token', authToken);
+          loginScreen.classList.add('hidden');
+          loadFromServer().then(() => renderToday());
+        } else {
+          loginError.textContent = 'Wrong password';
+          loginError.style.display = 'block';
+        }
+      } else {
+        // Register
+        if (pass !== passConfirm.value) {
+          loginError.textContent = 'Passwords don\'t match';
+          loginError.style.display = 'block';
+          return;
+        }
+        if (pass.length < 4) {
+          loginError.textContent = 'Minimum 4 characters';
+          loginError.style.display = 'block';
+          return;
+        }
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pass }),
+        });
+        const data = await res.json();
+        if (data.ok) {
+          authToken = data.token;
+          localStorage.setItem('myhabits_token', authToken);
+          loginScreen.classList.add('hidden');
+          loadFromServer().then(() => renderToday());
+        }
+      }
+    });
+
+    // Enter key
+    [passInput, passConfirm].forEach(el => el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') loginBtn.click();
+    }));
+
+  } catch {
+    loginScreen.classList.add('hidden');
+  }
+}
+
 // ===== DATA =====
-const EMOJIS = ['💪','📚','🧘','🏃','💧','🎨','🎵','💊','🥗','🌙','☀️','🚭','🔒','🧹','✍️','⭐️'];
+const EMOJIS = ['рЯТ™','рЯУЪ','рЯІШ','рЯПГ','рЯТІ','рЯО®','рЯОµ','рЯТК','рЯ•Ч','рЯМЩ','вШАпЄП','рЯЪ≠','рЯФТ','рЯІє','вЬНпЄП','в≠РпЄП'];
 const COLORS = [
   {name:'Mint',hex:'#34C759'},{name:'Teal',hex:'#5AC8FA'},{name:'Blue',hex:'#007AFF'},
   {name:'Purple',hex:'#AF52DE'},{name:'Pink',hex:'#FF2D55'},{name:'Red',hex:'#FF3B30'},
@@ -348,7 +558,8 @@ let _cache = null;
 
 async function loadFromServer() {
   try {
-    const res = await fetch('/api/data');
+    const res = await fetch('/api/data', { headers: authToken ? { 'X-Auth-Token': authToken } : {} });
+    if (!res.ok) return JSON.parse(localStorage.getItem('myhabits_data') || '{"habits":[],"completions":{}}');
     const serverData = await res.json();
     const localData = JSON.parse(localStorage.getItem('myhabits_data') || '{"habits":[],"completions":{}}');
 
@@ -357,7 +568,7 @@ async function loadFromServer() {
       _cache = localData;
       await fetch('/api/data', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(authToken ? { 'X-Auth-Token': authToken } : {}) },
         body: JSON.stringify(localData),
       });
       return localData;
@@ -380,7 +591,7 @@ function save(data) {
   localStorage.setItem('myhabits_data', JSON.stringify(data));
   fetch('/api/data', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...(authToken ? { 'X-Auth-Token': authToken } : {}) },
     body: JSON.stringify(data),
   }).catch(() => {});
 }
@@ -438,10 +649,11 @@ tabs.forEach(t => t.addEventListener('click', () => {
   pages.forEach(p => p.classList.remove('active'));
   t.classList.add('active');
   document.getElementById('page-' + t.dataset.page).classList.add('active');
-  addBtn.style.display = (t.dataset.page === 'stats') ? 'none' : 'flex';
+  addBtn.style.display = (t.dataset.page === 'today' || t.dataset.page === 'habits') ? 'flex' : 'none';
   if (t.dataset.page === 'today') renderToday();
   if (t.dataset.page === 'habits') renderHabits();
   if (t.dataset.page === 'stats') renderStats();
+  if (t.dataset.page === 'finance') renderFinance();
 }));
 
 // ===== TODAY =====
@@ -456,7 +668,7 @@ function renderToday() {
   const progCard = document.getElementById('progress-card');
 
   if (!data.habits.length) {
-    list.innerHTML = '<div class="empty-state"><div class="icon">✨</div><div class="msg">No habits yet.<br>Tap + to create your first habit.</div></div>';
+    list.innerHTML = '<div class="empty-state"><div class="icon">вЬ®</div><div class="msg">No habits yet.<br>Tap + to create your first habit.</div></div>';
     progCard.style.display = 'none';
     return;
   }
@@ -488,7 +700,7 @@ function renderToday() {
         <div class="habit-emoji" style="background:${hexToRgba(h.color, 0.2)}">${h.emoji}</div>
         <div class="habit-info">
           <div class="habit-name">${h.name}</div>
-          ${streak > 0 ? `<div class="habit-streak">🔥 ${streak} day${streak!==1?'s':''}</div>` : ''}
+          ${streak > 0 ? `<div class="habit-streak">рЯФ• ${streak} day${streak!==1?'s':''}</div>` : ''}
           <div class="week-dots">${dots}</div>
         </div>
         <button class="check-btn ${done?'checked':''}" style="border-color:${hexToRgba(h.color, 0.4)};background:${done ? h.color : 'none'}"
@@ -511,7 +723,7 @@ function renderHabits() {
   const list = document.getElementById('habits-list');
 
   if (!data.habits.length) {
-    list.innerHTML = '<div class="empty-state"><div class="icon">📋</div><div class="msg">No habits yet.<br>Tap + to add one.</div></div>';
+    list.innerHTML = '<div class="empty-state"><div class="icon">рЯУЛ</div><div class="msg">No habits yet.<br>Tap + to add one.</div></div>';
     return;
   }
 
@@ -525,10 +737,10 @@ function renderHabits() {
           <div class="name">${h.name}</div>
           <div class="meta">Created ${created.toLocaleDateString('en-US', {month:'short', day:'numeric'})}</div>
         </div>
-        ${streak > 0 ? `<span class="streak-badge">🔥 ${streak}</span>` : ''}
+        ${streak > 0 ? `<span class="streak-badge">рЯФ• ${streak}</span>` : ''}
         <div class="actions">
-          <button class="icon-btn" onclick="editHabit('${h.id}')">✏️</button>
-          <button class="icon-btn delete" onclick="confirmDelete('${h.id}')">🗑</button>
+          <button class="icon-btn" onclick="editHabit('${h.id}')">вЬПпЄП</button>
+          <button class="icon-btn delete" onclick="confirmDelete('${h.id}')">рЯЧС</button>
         </div>
       </div>`;
   }).join('');
@@ -723,15 +935,101 @@ function renderStats() {
           <div class="pct">${pct}% completion</div>
         </div>
         <div class="right">
-          <div class="streak">🔥 ${cs}</div>
+          <div class="streak">рЯФ• ${cs}</div>
           <div class="best">Best: ${ls}</div>
         </div>
       </div>`;
   }).join('');
 }
 
+// ===== FINANCE =====
+let finMonth = new Date();
+
+function financeKey(date) {
+  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`;
+}
+
+function renderFinance(skipInputs) {
+  const data = load();
+  if (!data.finance) data.finance = {};
+
+  const now = new Date();
+  const isCurrentMonth = finMonth.getFullYear() === now.getFullYear() && finMonth.getMonth() === now.getMonth();
+  document.getElementById('fin-next-month').disabled = isCurrentMonth;
+
+  const key = financeKey(finMonth);
+  const current = data.finance[key] || { earned: 0, saved: 0 };
+
+  document.getElementById('finance-month-title').textContent =
+    finMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+  if (!skipInputs) {
+    document.getElementById('fin-earned').value = current.earned || '';
+    document.getElementById('fin-saved').value = current.saved || '';
+  }
+
+  // Total saved across all months
+  let totalSaved = 0;
+  Object.values(data.finance).forEach(m => { totalSaved += (m.saved || 0); });
+  document.getElementById('finance-total-amount').innerHTML =
+    totalSaved.toLocaleString('de-DE') + ' <span class="currency">вВђ</span>';
+
+  // History
+  const histDiv = document.getElementById('finance-history');
+  const sortedKeys = Object.keys(data.finance).filter(k => {
+    const m = data.finance[k];
+    return (m.earned || 0) > 0 || (m.saved || 0) > 0;
+  }).sort().reverse();
+
+  if (!sortedKeys.length) {
+    histDiv.innerHTML = '<div style="color:var(--text2);text-align:center;padding:20px">No records yet</div>';
+    return;
+  }
+
+  histDiv.innerHTML = sortedKeys.map(k => {
+    const m = data.finance[k];
+    const [y, mo] = k.split('-');
+    const d = new Date(parseInt(y), parseInt(mo) - 1);
+    const monthName = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    return `
+      <div class="finance-hist-row">
+        <div>
+          <div class="month">${monthName}</div>
+          <div class="details">Earned: ${(m.earned||0).toLocaleString('de-DE')} вВђ ¬Ј Saved: ${(m.saved||0).toLocaleString('de-DE')} вВђ</div>
+        </div>
+        <div class="saved">+${(m.saved||0).toLocaleString('de-DE')} вВђ</div>
+      </div>`;
+  }).join('');
+}
+
+document.getElementById('fin-prev-month').addEventListener('click', () => {
+  finMonth = new Date(finMonth.getFullYear(), finMonth.getMonth() - 1, 1);
+  renderFinance();
+});
+document.getElementById('fin-next-month').addEventListener('click', () => {
+  const now = new Date();
+  const next = new Date(finMonth.getFullYear(), finMonth.getMonth() + 1, 1);
+  if (next <= new Date(now.getFullYear(), now.getMonth() + 1, 0)) {
+    finMonth = next;
+    renderFinance();
+  }
+});
+
+document.getElementById('fin-save-btn').addEventListener('click', () => {
+  const data = load();
+  if (!data.finance) data.finance = {};
+  const key = financeKey(finMonth);
+  const earned = parseFloat(document.getElementById('fin-earned').value) || 0;
+  const saved = parseFloat(document.getElementById('fin-saved').value) || 0;
+  data.finance[key] = { earned, saved };
+  save(data);
+  renderFinance();
+});
+
 // ===== INIT =====
-loadFromServer().then(() => renderToday());
+initAuth().then(() => {
+  if (authToken) loadFromServer().then(() => renderToday());
+});
 
 // Sync from server every 10 seconds
 setInterval(async () => {
@@ -740,6 +1038,7 @@ setInterval(async () => {
   if (activePage?.id === 'page-today') renderToday();
   else if (activePage?.id === 'page-habits') renderHabits();
   else if (activePage?.id === 'page-stats') renderStats();
+  else if (activePage?.id === 'page-finance') renderFinance(true);
 }, 10000);
 
 // Register service worker
