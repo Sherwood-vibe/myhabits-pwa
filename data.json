@@ -1,0 +1,16 @@
+{
+  "habits": [
+    {
+      "id": "a25278bb-715c-4d6a-8df8-dd06a5b85b8e",
+      "name": "Drink water",
+      "emoji": "💪",
+      "color": "#34C759",
+      "createdAt": "2026-06-25T16:43:02.559Z"
+    }
+  ],
+  "completions": {
+    "2026-06-25": [
+      "a25278bb-715c-4d6a-8df8-dd06a5b85b8e"
+    ]
+  }
+}
