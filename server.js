@@ -11,7 +11,7 @@ const DATA_KEY = 'myhabits_data';
 const PASS_KEY = 'myhabits_pass';
 
 const MIME = {
-  '.html': 'text/html', '.css': 'text/css', '.js': 'application/javascript',
+  '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'application/javascript; charset=utf-8',
   '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg',
   '.svg': 'image/svg+xml', '.ico': 'image/x-icon',
 };
