@@ -30,7 +30,9 @@ async function redisGet(key) {
       headers: { Authorization: `Bearer ${REDIS_TOKEN}` },
     });
     const json = await res.json();
-    return json.result || null;
+    let val = json.result || null;
+    if (val && val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
+    return val;
   } catch { return null; }
 }
 
